@@ -1,0 +1,51 @@
+services:
+  database:
+    image: postgres:13.3
+    restart: on-failure
+    environment:
+      POSTGRES_DB: "db"
+      POSTGRES_USER: "admin"
+      POSTGRES_PASSWORD: "horse_ate_green_guinea_pig"
+    volumes:
+      - web3_db_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "pg_isready", "-d", "db", "-U", "admin"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    networks:
+      - database_net
+
+  backend:
+    build: ./server
+    restart: on-failure
+    depends_on:
+      - database
+    environment:
+      DB_URL: postgresql://database:5432/db
+      DB_USER: admin
+      DB_PASSWORD: horse_ate_green_guinea_pig
+    networks:
+      - database_net
+      - web_server_net
+
+  frontend:
+    build: ./frontend
+    restart: on-failure
+    depends_on:
+      - backend
+    ports:
+      - "80:80"
+    networks:
+      - web_server_net
+
+volumes:
+  web3_db_data:
+
+networks:
+  database_net:
+    driver: bridge
+  web_server_net:
+    driver: bridge
