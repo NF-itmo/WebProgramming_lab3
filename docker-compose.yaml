@@ -17,12 +17,16 @@ services:
       start_period: 5s
     networks:
       - database_net
+    ports:
+      - "5551:5432"
 
   backend:
     build: ./server
     restart: on-failure
     depends_on:
       - database
+    volumes:
+      - maven-cache:/root/.m2
     environment:
       DB_URL: postgresql://database:5432/db
       DB_USER: admin
@@ -38,11 +42,13 @@ services:
       - backend
     ports:
       - "80:80"
+      - "443:443"
     networks:
       - web_server_net
 
 volumes:
   web3_db_data:
+  maven-cache:
 
 networks:
   database_net:

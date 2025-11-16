@@ -7,6 +7,7 @@
     <groupId>org.web3</groupId>
     <artifactId>web3</artifactId>
     <version>1.0.0</version>
+    <packaging>war</packaging>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
@@ -16,37 +17,13 @@
 
     <build>
         <plugins>
-            <!-- Plugin for manifest generation -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.4.2</version>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>3.4.0</version>
                 <configuration>
-                    <archive>
-                        <manifest>
-                            <mainClass>org.web3.Main</mainClass>
-                        </manifest>
-                        <manifestEntries>
-                            <Multi-Release>true</Multi-Release>
-                        </manifestEntries>
-                    </archive>
+                    <warSourceDirectory>src/main/config</warSourceDirectory>
                 </configuration>
-            </plugin>
-
-            <!-- Build fat-jar -->
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-shade-plugin</artifactId>
-                <version>3.6.0</version>
-                <executions>
-                    <execution>
-                        <id>shade-my-jar</id>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>shade</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
@@ -65,11 +42,66 @@
             <version>3.0.1</version>
         </dependency>
 
+        <!-- https://mvnrepository.com/artifact/jakarta.persistence/jakarta.persistence-api -->
         <dependency>
-            <groupId>com.sun.xml.ws</groupId>
-            <artifactId>jaxws-rt</artifactId>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+            <version>3.2.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.postgresql/postgresql -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>42.7.8</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.hibernate.orm/hibernate-core -->
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
+            <artifactId>hibernate-core</artifactId>
+            <version>7.1.7.Final</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.springframework.security/spring-security-crypto -->
+        <dependency>
+            <groupId>org.springframework.security</groupId>
+            <artifactId>spring-security-crypto</artifactId>
+            <version>6.5.6</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/jakarta.annotation/jakarta.annotation-api -->
+        <dependency>
+            <groupId>jakarta.annotation</groupId>
+            <artifactId>jakarta.annotation-api</artifactId>
+            <version>3.0.0</version>
+        </dependency>
+
+        <!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>4.5.0</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>8.0.1.Final</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>jakarta.validation</groupId>
+            <artifactId>jakarta.validation-api</artifactId>
             <version>3.0.2</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>jakarta.el</artifactId>
+            <version>4.0.2</version>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 </project>
