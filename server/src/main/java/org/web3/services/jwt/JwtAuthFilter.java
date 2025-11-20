@@ -1,4 +1,4 @@
-package org.web3.services.JWTAuth;
+package org.web3.services.jwt;
 
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
@@ -6,17 +6,21 @@ import jakarta.xml.soap.*;
 import jakarta.xml.ws.handler.MessageContext;
 import jakarta.xml.ws.handler.soap.SOAPHandler;
 import jakarta.xml.ws.handler.soap.SOAPMessageContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.xml.namespace.QName;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Set;
 
-public class JWTAuthFilter implements SOAPHandler<SOAPMessageContext> {
+public class JwtAuthFilter implements SOAPHandler<SOAPMessageContext> {
     private static final String AUTH_HEADER_NAMESPACE = "http://bearer.services.web3.org/";
-    private static final String AUTH_HEADER_LOCAL_NAME = "Authorization";
+    private static final String AUTH_HEADER_NAME = "Authorization";
 
-    private final JWTVerifier jwtVerifier = new JWTVerifier("AuthService");
+    private final JwtVerifier jwtVerifier = new JwtVerifier("AuthService");
+
+    private static final Logger logger = LoggerFactory.getLogger(JwtAuthFilter.class);
 
     @Override
     public boolean handleMessage(SOAPMessageContext context) {
@@ -53,7 +57,7 @@ public class JWTAuthFilter implements SOAPHandler<SOAPMessageContext> {
     }
 
     private String extractJwtToken(SOAPHeader header) throws SOAPException {
-        QName authQName = new QName(AUTH_HEADER_NAMESPACE, AUTH_HEADER_LOCAL_NAME);
+        QName authQName = new QName(AUTH_HEADER_NAMESPACE, AUTH_HEADER_NAME);
         Iterator<?> headerElements = header.getChildElements(authQName);
 
         if (headerElements.hasNext()) {
@@ -70,6 +74,7 @@ public class JWTAuthFilter implements SOAPHandler<SOAPMessageContext> {
 
     @Override
     public boolean handleFault(SOAPMessageContext context) {
+        logger.error("JWT Auth Handler encountered a fault");
         System.err.println("JWT Auth Handler encountered a fault");
         return true;
     }

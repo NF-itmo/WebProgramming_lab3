@@ -15,6 +15,8 @@ const LoginForm = () => {
         <LoginFormComponent
             onRegisterHandler={
                 (login, password) => {
+                    if (login === "" || password === "") return showError("Login and password must be non-empty")
+                    if (password.length < 4) return showError("Password should contain at least 4 symbols")
                     registerReq(
                         login,
                         password,
@@ -29,6 +31,7 @@ const LoginForm = () => {
             }
             onLoginHandler={
                 (login, password) => {
+                    if (login === "" || password === "") return showError("Login and password must be non-empty")
                     loginReq(
                         login,
                         password,

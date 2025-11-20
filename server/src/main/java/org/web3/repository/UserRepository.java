@@ -1,33 +1,35 @@
 package org.web3.repository;
 
-import org.hibernate.Session;
-import org.hibernate.Transaction;
-import org.web3.models.Point;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
 import org.web3.models.User;
-import org.web3.repository.hibernateSessionUtils.HibernateSessionFactory;
 
+@ApplicationScoped
 public class UserRepository {
+    @PersistenceContext(unitName = "primary")
+    private EntityManager entityManager;
+
+    @Transactional
     public void save(User user) {
-        Session session = HibernateSessionFactory.getSession();
-        Transaction tx1 = session.beginTransaction();
-        session.persist(user);
-        tx1.commit();
-        session.close();
+        entityManager.persist(user);
     }
 
+    @Transactional
     public User getById(int id) {
-        Session session = HibernateSessionFactory.getSession();
-        final User user = session.find(User.class, id);
-        session.close();
-        return user;
+        return entityManager.find(User.class, id);
     }
 
+    @Transactional
     public User getByUsername(String username) {
-        Session session = HibernateSessionFactory.getSession();
-        final User user = session.createQuery("from User where username = :username", User.class)
-                .setParameter("username", username)
-                .getSingleResult();
-        session.close();
-        return user;
+        try{
+            return entityManager.createQuery("select u from User u where u.username = :username", User.class)
+                    .setParameter("username", username)
+                    .getSingleResult();
+        } catch (NoResultException e){
+            return null;
+        }
     }
 }

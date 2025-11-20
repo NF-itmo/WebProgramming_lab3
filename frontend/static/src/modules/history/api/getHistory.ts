@@ -63,8 +63,9 @@ export const getHistory = ({
                 return onError(err.message ?? "Ошибка при обработке ответа сервера");
             }
         },
-        onError: (status, _result) => {
-            return onError(`Неожиданная ошибка — ${status}`);
+        onError: (status, result) => {
+            const failMsg = result?.innerHTML;
+            return onError(`Неожиданная ошибка - ${status}: ${failMsg ? failMsg : ''}`);
         }
     });
 };

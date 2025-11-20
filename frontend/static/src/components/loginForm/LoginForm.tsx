@@ -1,6 +1,7 @@
 import { FormEventHandler, useState } from "react";
 import styles from "./LoginForm.module.css"
 import TextInput from "../../UI/inputs/textInput/TextInput";
+import MultiInput from "../../UI/inputs/multiInput/MultiInput"
 import ButtonPrimary from "../../UI/buttons/buttonPrimary/ButtonPrimary";
 import ButtonSecondary from "../../UI/buttons/buttonSecondary/ButtonSecondary";
 
@@ -20,15 +21,37 @@ const LoginForm = (
 
     return (
         <div className={styles['form-container']}>
-            <TextInput
+            <MultiInput
                 inputGroupName="login"
-                welcomeText="Логин"
-                onChangeHandler={(value) => setLogin(value)}
+                inputConfig = {
+                    {
+                        type: "text",
+                        welcomeText: "Логин",
+                        defaultValue: "",
+                        onChangeHandler: (value: string) => setLogin(value)
+                    }
+                }
             />
-            <TextInput
+            {/*<MultiInput
                 inputGroupName="password"
-                welcomeText="Пароль"
-                onChangeHandler={(value) => setPassword(value)}
+                inputConfig = {
+                    {
+                        type: "number",
+                        defaultValue: 1,
+                        onChangeHandler: (value: number) => {}
+                    }
+                }
+            />*/}
+            <MultiInput
+                inputGroupName="login"
+                inputConfig = {
+                    {
+                        type: "text",
+                        welcomeText: "Пароль",
+                        defaultValue: "",
+                        onChangeHandler: (value: string) => setPassword(value)
+                    }
+                }
             />
             <ButtonPrimary
                 type="button"

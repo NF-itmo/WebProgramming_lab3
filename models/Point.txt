@@ -1,0 +1,36 @@
+package org.web3.models;
+
+import jakarta.persistence.*;
+import lombok.*;
+
+import java.time.OffsetDateTime;
+
+
+@Entity
+@Table(name = "\"PointResults\"")
+@Builder @NoArgsConstructor @AllArgsConstructor
+@Getter
+public class Point {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "\"PointResults_id_seq\"")
+    private int id;
+
+    @Column(nullable = false)
+    private float x;
+
+    @Column(nullable = false)
+    private float y;
+
+    @Column(nullable = false)
+    private float r;
+
+    @Column(name = "is_hitted", nullable = false)
+    private boolean isHitted;
+
+    @Column(name = "created_at", nullable = false)
+    private OffsetDateTime timestamp;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+}

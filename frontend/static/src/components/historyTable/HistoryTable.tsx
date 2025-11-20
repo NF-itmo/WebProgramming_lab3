@@ -14,7 +14,7 @@ type props = {
     }[];
 }
 
-const Table = (
+const HistoryTable = (
     {
         tableData = []
     }: props
@@ -57,4 +57,4 @@ const Table = (
     )
 }
 
-export default Table;
+export default HistoryTable;

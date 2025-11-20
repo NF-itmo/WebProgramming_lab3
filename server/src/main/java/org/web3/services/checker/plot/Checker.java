@@ -1,8 +1,10 @@
 package org.web3.services.checker.plot;
 
+import jakarta.enterprise.context.ApplicationScoped;
 import org.web3.services.checker.plot.utils.PlotQuarters;
 import org.web3.services.checker.plot.utils.PlotUtils;
 
+@ApplicationScoped
 public class Checker implements CheckerFunction{
     public boolean check(final float x, final float y, final float r) {
         final PlotQuarters quarter = PlotUtils.getQuarter(x, y);

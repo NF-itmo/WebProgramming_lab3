@@ -61,17 +61,18 @@ export const soapRequest = async ({
             return onError(
                 result.status,
                 parseSOAPResponse(
-                    await result.text()
+                    await result.text(),
+                    "faultstring"
                 )
             )
         }
     );
 }
 
-const parseSOAPResponse = (text: string) => {
+const parseSOAPResponse = (text: string, tag: string = "return") => {
     const parser = new DOMParser();
     const xml = parser.parseFromString(text, 'text/xml');
-    return xml.querySelector("return");
+    return xml.querySelector(tag);
 }
 
 

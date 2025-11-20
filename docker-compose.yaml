@@ -17,20 +17,21 @@ services:
       start_period: 5s
     networks:
       - database_net
-    ports:
-      - "5551:5432"
 
   backend:
     build: ./server
     restart: on-failure
     depends_on:
-      - database
+      database:
+        condition: service_healthy
     volumes:
       - maven-cache:/root/.m2
     environment:
       DB_URL: postgresql://database:5432/db
       DB_USER: admin
       DB_PASSWORD: horse_ate_green_guinea_pig
+      JWT_SECRET: mySuperSecretKey12345
+      JWT_EXPIRATION_MS: 86_400_000
     networks:
       - database_net
       - web_server_net

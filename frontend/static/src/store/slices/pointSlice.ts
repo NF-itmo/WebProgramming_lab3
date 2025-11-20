@@ -27,6 +27,9 @@ export const pointsSlice = createSlice({
             };
             state.points.unshift(newPoint);
         },
+        appendPointsArray: (state, action: PayloadAction<Point[]>) => {
+            state.points = state.points.concat(action.payload);
+        },
         clearPoints: (state) => {
             state.points = [];
         },
@@ -36,5 +39,5 @@ export const pointsSlice = createSlice({
     },
 });
 
-export const { addPoint, clearPoints, fromArray } = pointsSlice.actions;
+export const { addPoint, clearPoints, fromArray, appendPointsArray } = pointsSlice.actions;
 export default pointsSlice.reducer;

@@ -2,6 +2,7 @@ package org.web3.services.checker;
 
 import com.auth0.jwt.interfaces.DecodedJWT;
 import jakarta.annotation.Resource;
+import jakarta.inject.Inject;
 import jakarta.jws.HandlerChain;
 import jakarta.jws.WebParam;
 import jakarta.jws.WebService;
@@ -26,11 +27,10 @@ import java.util.stream.Collectors;
 @WebService
 @HandlerChain(file = "/handlers/BearerAuthHandler.xml")
 public class CheckerService {
-    @Resource
-    private WebServiceContext webServiceContext;
+    @Resource private WebServiceContext webServiceContext;
+    @Inject private PointRepository pointRepository;
+    @Inject private CheckerFunction checker;
 
-    private static final CheckerFunction checker = new Checker();
-    private final PointRepository pointRepository = new PointRepository();
     private final Validator validator;
 
     public CheckerService() {
@@ -44,17 +44,10 @@ public class CheckerService {
             @WebParam(name = "y") final float y,
             @WebParam(name = "r") final float r
     ) {
-        CheckRequest request = new CheckRequest(x, y, r);
-        Set<ConstraintViolation<CheckRequest>> violations = validator.validate(request);
-        if (!violations.isEmpty()) {
-            String errors = violations.stream()
-                    .map(v -> v.getPropertyPath() + ": " + v.getMessage())
-                    .collect(Collectors.joining(", "));
-            throw new IllegalArgumentException("Validation failed: " + errors);
-        }
+        final CheckRequest request = new CheckRequest(x, y, r);
+        validateRequest(request);
 
-        MessageContext messageContext = webServiceContext.getMessageContext();
-        DecodedJWT token = (DecodedJWT) messageContext.get("token");
+        final int userId = getTokenFromContext().getClaim("uid").asInt();
 
         final Point point = Point.builder()
                 .x(x)
@@ -63,14 +56,30 @@ public class CheckerService {
                 .isHitted(checker.check(x,y,r))
                 .timestamp(OffsetDateTime.now())
                 .user(
-                        User.builder().id(token.getClaim("uid").asInt()).build()
+                        User.builder().id(userId).build()
                 )
                 .build();
         pointRepository.save(point);
 
-        return new CheckResultResponse(
-                point.isHitted(),
-                point.getTimestamp()
-        );
+        return new CheckResultResponse(point.isHitted(), point.getTimestamp());
     }
+
+    private DecodedJWT getTokenFromContext() {
+        final Object tokenObj = webServiceContext.getMessageContext().get("token");
+        if (!(tokenObj instanceof DecodedJWT token)) {
+            throw new IllegalStateException("JWT token missing in context");
+        }
+        return token;
+    }
+
+    private void validateRequest(CheckRequest request) {
+        final Set<ConstraintViolation<CheckRequest>> violations = validator.validate(request);
+        if (!violations.isEmpty()) {
+            String errors = violations.stream()
+                    .map(v -> v.getPropertyPath() + ": " + v.getMessage())
+                    .collect(Collectors.joining(", "));
+            throw new IllegalArgumentException("Validation failed: " + errors);
+        }
+    }
+
 }

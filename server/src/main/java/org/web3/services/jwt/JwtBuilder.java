@@ -1,22 +1,21 @@
-package org.web3.services.JWTAuth;
+package org.web3.services.jwt;
 
 import com.auth0.jwt.JWTCreator;
 import com.auth0.jwt.algorithms.Algorithm;
 
-import java.time.Instant;
 import java.util.Date;
 
-public class StrictJWTBuilder {
-    private final Algorithm algorithm = JWTConfig.algorithm;
+public class JwtBuilder {
+    private final Algorithm algorithm = JwtConfig.algorithm;
     private final JWTCreator.Builder tokenBuilder;
     private final int expirationDelta;
 
-    StrictJWTBuilder(JWTCreator.Builder tokenBuilder, int expirationDelta) {
+    JwtBuilder(JWTCreator.Builder tokenBuilder, int expirationDelta) {
         this.tokenBuilder = tokenBuilder;
         this.expirationDelta = expirationDelta;
     }
 
-    public StrictJWTBuilder addKey(String key, int value) {
+    public JwtBuilder addKey(String key, int value) {
         tokenBuilder.withClaim(key, value);
         return this;
     }

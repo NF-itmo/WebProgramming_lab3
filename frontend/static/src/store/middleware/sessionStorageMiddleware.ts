@@ -1,10 +1,10 @@
 import { ActionCreatorWithPayload, Middleware } from '@reduxjs/toolkit';
 
-export const createLocalStorageMiddleware = <T>(
+export const createSessionStorageMiddleware = <T>(
   actionCreator: ActionCreatorWithPayload<T>,
   itemName: string
 ): Middleware => {
-  const localStorageMiddleware: Middleware = store => next => action => {
+  const sessionStorageMiddleware: Middleware = store => next => action => {
     const result = next(action);
     
     if (actionCreator.match(action)) {
@@ -13,11 +13,11 @@ export const createLocalStorageMiddleware = <T>(
           ? action.payload
           : JSON.stringify(action.payload);
 
-      localStorage.setItem(itemName, value);
+      sessionStorage.setItem(itemName, value);
     }
 
     return result;
   };
 
-  return localStorageMiddleware;
+  return sessionStorageMiddleware;
 };

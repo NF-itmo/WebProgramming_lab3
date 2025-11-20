@@ -4,6 +4,7 @@ type props = {
     inputGroupName: string,
     welcomeText?: string,
     defaultValue?: string,
+    minLength?: number,
     onChangeHandler?: (value: string) => void
 }
 
@@ -13,6 +14,7 @@ const TextInput = (
         inputGroupName,
         welcomeText = "",
         defaultValue = "",
+        minLength = 1,
         onChangeHandler = (value: string) => {}
     }: props
 ) => {
@@ -25,6 +27,7 @@ const TextInput = (
             onChange={
                 (e) => onChangeHandler(e.target.value)
             }
+            minLength={minLength}
             className={styles['text-input']}
             required
         >

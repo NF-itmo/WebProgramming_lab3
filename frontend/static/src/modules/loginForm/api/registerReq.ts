@@ -24,9 +24,8 @@ export const registerReq = (
             return onError(`Сервер вернул некорректный ответ`)
         },
         onError: (status, result) => {
-            return onError(
-                `Неожиданная ошибка - ${status}`
-            )
+            const failMsg = result?.innerHTML;
+            return onError(`Неожиданная ошибка - ${status}: ${failMsg ? failMsg : ''}`);
         }}
     )
 }
